@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Painel de Meta com Gráfico</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+  <div class="container">
+    <h2>Painel de Separação - Centro de Distribuição</h2>
+
+    <div id="form-container">
+      <div class="metas">
+        <label>Meta total do dia:</label>
+        <input type="number" id="metaTotal" value="4500">
+
+        <label>Início do turno:</label>
+        <input type="time" id="horaInicio" value="07:00">
+
+        <label>Fim previsto do turno:</label>
+        <input type="time" id="horaFim" value="00:00">
+      </div>
+
+      <div>
+        <label>Registre as tarefas por hora:</label>
+        <div id="tarefasPorHora">
+
+        </div>
+        <div class="botao_atualizar">
+          <button onclick="atualizarGrafico()">Atualizar</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="previsaoSaida"></div>
+    <div id="produtividadeNecessaria"></div>
+    <div id="metaSeparacaoHora"></div>
+    <div id="alertaAtraso" class="alerta" style="display: none;">⚠️ A produção está atrasada! Previsão de saída
+      estendida.</div>
+
+    <div id="grafico-container">
+      <canvas id="graficoMeta"></canvas>
+      <canvas id="graficoBarras" style="display:none;"></canvas>
+    </div>
+  </div>
+
+  <button id="fullscreen-btn" onclick="toggleFullscreen()">Tela Cheia</button>
+
+  <script src="main.js"></script>
+  <script src="script.js"></script>
+
+</body>
+
+</html>

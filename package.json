@@ -1,0 +1,26 @@
+{
+  "name": "cd_web",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.1.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "grunt": "^1.6.1",
+    "puppeteer": "^24.16.1"
+  },
+  "devDependencies": {
+    "grunt-contrib-sass": "^2.0.0",
+    "grunt-contrib-uglify": "^5.2.2",
+    "grunt-sass": "^4.0.0",
+    "sass": "^1.89.0"
+  },
+  "keywords": [],
+  "description": ""
+}

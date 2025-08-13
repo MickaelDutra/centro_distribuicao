@@ -1,0 +1,84 @@
+===========================
+📄 README - CD_WEB - Modo Distribuição
+===========================
+
+Este documento explica como rodar a aplicação CD_WEB em modo de produção (distribuição)
+em uma máquina Windows para servir os arquivos ao setor via rede local.
+
+---------------------------
+✅ PRÉ-REQUISITOS
+---------------------------
+
+1. Node.js instalado
+   - Baixe e instale a versão LTS em: https://nodejs.org
+
+2. Acesso à linha de comando (cmd ou PowerShell)
+
+---------------------------
+📦 INSTALAÇÃO
+---------------------------
+
+1. Abra o terminal na pasta do projeto (onde está este README e o arquivo package.json)
+
+2. Instale as dependências:
+   > npm install
+
+3. Gere os arquivos de produção:
+   > npx grunt
+
+   - Os arquivos otimizados serão gerados dentro da pasta: `dist`
+
+---------------------------
+🚀 INICIAR O SERVIDOR
+---------------------------
+
+1. Instale o servidor local `serve` (apenas na primeira vez):
+   > npm install -g serve
+
+2. Inicie o servidor apontando para a pasta `dist`:
+   > serve -s dist
+
+3. A aplicação estará disponível em:
+   > http://localhost:3000
+
+4. Para acesso em outros computadores da rede:
+   - Descubra o IP da máquina com o comando:
+     > ipconfig
+
+   - Exemplo de endereço para acesso em outro PC:
+     > http://192.168.0.50:3000
+
+---------------------------
+🛠 CRIAR UM ATALHO AUTOMÁTICO
+---------------------------
+
+Você pode criar um arquivo chamado `iniciar-servidor.bat` com o conteúdo:
+
+   cd C:\CAMINHO\DO\PROJETO
+   serve -s dist
+
+E adicionar esse atalho ao menu iniciar ou agendador de tarefas para rodar automaticamente
+ao ligar o computador.
+
+---------------------------
+❓ DÚVIDAS
+---------------------------
+
+Em caso de erro ao rodar o Grunt, certifique-se de que o arquivo `gruntfile.js` está corretamente configurado
+e que todas as dependências foram instaladas.
+
+---------------------------
+📁 ESTRUTURA DO PROJETO
+---------------------------
+
+CD_WEB/
+├── dist/                ← Arquivos prontos para produção
+├── src/                 ← Código fonte (HTML, JS, CSS)
+├── gruntfile.js         ← Configuração do Grunt
+├── package.json         ← Configurações e dependências
+├── README.txt           ← Este documento
+
+---------------------------
+👨‍💻 Desenvolvido para uso interno
+---------------------------
+
