@@ -1,6 +1,7 @@
 // script.js
 
 async function carregarDados() {
+    showLoading();
     try {
         const resposta = await fetch('http://10.0.6.185:3000/dados');
         if (!resposta.ok) {
@@ -9,18 +10,8 @@ async function carregarDados() {
 
         const dados = await resposta.json();
 
-        // Preenche tarefas por hora - só os inputs gerados dentro do #tarefasPorHora
         if (dados.tarefasPorHora && typeof dados.tarefasPorHora === 'object') {
-            const inputsHoras = document.querySelectorAll('#tarefasPorHora input');
-            inputsHoras.forEach((input) => {
-                const hora = input.getAttribute('data-hora'); // "07:00"
-                const valor = dados.tarefasPorHora[hora];
-                if (valor !== undefined && valor !== 0) {
-                    input.value = valor;   // mostra só se for diferente de zero
-                } else {
-                    input.value = "";      // se não existir ou for zero, deixa vazio
-                }
-            });
+            preencherTarefas(dados);
         }
 
         // Atualiza gráficos com base nos inputs atuais (incluindo metaTotal, etc)
@@ -29,8 +20,27 @@ async function carregarDados() {
     } catch (erro) {
         console.error('Erro ao carregar dados:', erro);
     }
+    hideLoading();
 }
 
+function preencherTarefas(dados) {
+    const agora = new Date();
+    const horaAtual = agora.getHours(); // só a hora inteira
+
+    const inputsHoras = document.querySelectorAll('#tarefasPorHora input');
+    inputsHoras.forEach((input) => {
+        const horaInputStr = input.getAttribute('data-hora'); // ex: "17:00"
+        const [horaInput] = horaInputStr.split(':').map(Number);
+
+        // 
+        if (horaInput < horaAtual) {
+            const valor = dados.tarefasPorHora[horaInputStr] ?? 0;
+            input.value = valor === 0 ? "" : valor; // se 0 deixa vazio
+        } else {
+            input.value = ""; // hora futura = vazio
+        }
+    });
+}
 
 
 window.addEventListener('load', () => {
