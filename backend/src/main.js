@@ -2,11 +2,38 @@ let chartLine;
 let chartBar;
 let isLineChartVisible = true;
 
-// const do header
+
+window.onload = () => {
+    // Buscar configs do servidor
+    fetch("http://10.0.6.185:3000/config")
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('metaTotal').value = data.metaTotal;
+            document.getElementById('horaInicio').value = data.horaInicio;
+            document.getElementById('horaFim').value = data.horaFim;
+            gerarCamposHoras();
+            atualizarGrafico();
+        });
+
+    function salvarConfig() {
+        fetch("http://10.0.6.185:3000/config", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                metaTotal: document.getElementById('metaTotal').value,
+                horaInicio: document.getElementById('horaInicio').value,
+                horaFim: document.getElementById('horaFim').value
+            })
+        });
+    }
+    document.getElementById('metaTotal').addEventListener('change', salvarConfig);
+    document.getElementById('horaInicio').addEventListener('change', salvarConfig);
+    document.getElementById('horaFim').addEventListener('change', salvarConfig);
+};
+
 
 // cria os horários
 function gerarCamposHoras() {
-    const metaTotal = document.getElementById('metaTotal').value;
     const horaInicio = document.getElementById('horaInicio').value;
     const horaFim = document.getElementById('horaFim').value;
     // busca inicio hora e fim hora e splita em dois object
@@ -26,6 +53,7 @@ function gerarCamposHoras() {
     let horaAtual = new Date(inicioTurno);
     while (horaAtual < fimTurno) {
         const proximaHora = new Date(horaAtual.getTime() + 3600000);
+        const horaLabel = horaAtual.toTimeString().slice(0, 5); // "07:00"
         const label = `${horaAtual.toTimeString().slice(0, 5)} - ${proximaHora.toTimeString().slice(0, 5)}`;
 
         tarefasDiv.innerHTML += `
@@ -36,7 +64,12 @@ function gerarCamposHoras() {
         `;
 
         horaAtual = proximaHora;
+
     }
+    const inputsHoras = document.querySelectorAll('#tarefasPorHora input');
+    inputsHoras.forEach((input) => {
+        input.addEventListener('change', salvarDados);
+    });
 }
 
 // atualização do grafico
@@ -94,9 +127,10 @@ function atualizarGrafico() {
     });
 
 
-    const produtividadeMedia = acumulado / inputsHoras.length;
+    const produtividadeMedia = acumulado / (inputsHoras.length - 2);
+    console.log((inputsHoras.length - 2) + ` Horas de trabalho`)
     const novaDuracaoEstimativa = metaTotal / (produtividadeMedia || 1);
-// previsão de saída
+    // previsão de saída
     const fimEstimado = new Date(inicioTurno.getTime() + novaDuracaoEstimativa * 3600000);
     const horaEstimativa = fimEstimado.toTimeString().slice(0, 5);
 
@@ -105,10 +139,10 @@ function atualizarGrafico() {
     const tarefasRestantes = metaTotal - acumulado;
     const horasRestantes = duracaoTurno - horasTrabalhadas;
     const produtividadeNecessaria = tarefasRestantes / (horasRestantes || 1);
-// metas de separaçao
+    // metas de separaçao
     const metaSeparacaoHora = metaPorHora.toFixed(1);
     document.getElementById('metaSeparacaoHora').innerText = `📊 Meta de separação/hora: ${metaSeparacaoHora} tarefas/hora`;
-// produtividade necessaria
+    // produtividade necessaria
     const produtividadeNecessariaEl = document.getElementById('produtividadeNecessaria');
     if (acumulado < metaTotal) {
         produtividadeNecessariaEl.innerText = `📈 Produtividade necessária: ${produtividadeNecessaria.toFixed(1)} tarefas/hora`;
@@ -118,11 +152,11 @@ function atualizarGrafico() {
         produtividadeNecessariaEl.style.color = 'green';
     }
 
-// alerta de atraso
+    // alerta de atraso
     document.getElementById('alertaAtraso').style.display = fimEstimado > fimTurno ? 'block' : 'none';
 
     const corProducao = acumulado < metaTotal ? 'red' : 'green';
-// grafico
+    // grafico
     if (chartLine) chartLine.destroy();
     chartLine = new Chart(document.getElementById('graficoMeta').getContext('2d'), {
         type: 'line',
@@ -265,12 +299,8 @@ function alternarGrafico() {
     document.getElementById('graficoBarras').style.display = !isLineChartVisible ? 'block' : 'none';
 }
 
-setInterval(alternarGrafico, 5000);
+setInterval(alternarGrafico, 7000);
 
 document.getElementById('horaInicio').addEventListener('change', gerarCamposHoras);
 document.getElementById('horaFim').addEventListener('change', gerarCamposHoras);
 
-window.onload = () => {
-    gerarCamposHoras();
-    atualizarGrafico();
-};

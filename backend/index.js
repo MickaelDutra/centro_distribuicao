@@ -3,27 +3,47 @@ const cors = require("cors");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const { pathToFileURL } = require("url");
+const { config } = require("dotenv");
 
-
+require('dotenv').config();
 const app = express();
-const PORT = 3000;
-
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "src")));
+app.use(cors());
 
 
 const LOGIN_URL = "http://129.159.63.229:6042/login";
 const GRAFICO_URL = "http://129.159.63.229:6042/graficos/tarefas-por-hora";
+const CONFIG_FILE = path.join(__dirname, "config.json");
+const PORT = process.env.PORT || 3333;
 
 // Login
-const USER = "login";
-const PASS = "senha";
-
-
-app.use(cors());
+const USER = process.env.USER_WMS;
+const PASS = process.env.PASSOWRD_WMS;
 
 // rota principal
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "src", "apresentação_expedicao.html"));
+});
+
+
+app.get('/config', (req, res) => {
+  if (fs.existsSync(CONFIG_FILE)) {
+    const config = JSON.parse(fs.readFileSync(CONFIG_FILE, "utf-8"));
+    res.json(config);
+  } else {
+    // se não existe, devolve padrão
+    res.json({ metaTotal: "", horaInicio: "", horaFim: "" });
+  }
+});
+
+// POST /config → salva o arquivo config.json
+app.post('/config', (req, res) => {
+  const { metaTotal, horaInicio, horaFim } = req.body;
+  const config = { metaTotal, horaInicio, horaFim };
+  fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));
+  res.json({ message: "Configuração salva com sucesso!", config });
 });
 
 // rota de dados
@@ -35,8 +55,8 @@ app.get("/dados", async (req, res) => {
     args: ["--start-maximized"],
     defaultViewport: null
     */
-   headless: true,
-   args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"]
   });
 
   try {
@@ -85,7 +105,7 @@ app.get("/dados", async (req, res) => {
     await page.click('button[type="submit"]');
     await new Promise(resolve => setTimeout(resolve, 2000)); // espera 2 segundos
     // Aguarda gráfico renderizar
-    await page.waitForSelector("g.c3-texts-Quantidade text.c3-text", { timeout: 3000 });
+    await page.waitForSelector("g.c3-texts-Quantidade text.c3-text", { timeout: 9000 });
 
     // Coleta dados diretamente do DOM
     console.log("Coletando dados do DOM...")
@@ -109,12 +129,12 @@ app.get("/dados", async (req, res) => {
 
   } catch (e) {
     const pages = await browser.pages();
-        console.error("Erro capturado:", e);
+    console.error("Erro capturado:", e);
     await browser.close();
     return res.status(500).json({ erro: "Falha ao coletar dados.", detalhe: e.message });
   }
 });
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
+  console.log(`Servidor rodando em http://10.0.6.185:${PORT}`);
 });
