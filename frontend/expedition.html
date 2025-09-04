@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Painel de Meta com Gráfico</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="css/styleExpedition.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <nav id="nav-bar" class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        Centro de Distribuição</a>
+      <img src="./assets/img/frangoForm.png" alt="Logo" width="40" height="40" class="d-inline-block align-text-top">
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="/expedicao">Expedição</a></li>
+          <li class="nav-item"><a class="nav-link" href="/ocorrencias">Ocorrências</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Relatórios</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Configurações</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <p>Carregando...</p>
+  </div>
+
+  <div class="container">
+    <h2>Painel de Separação - Centro de Distribuição</h2>
+
+    <div id="form-container">
+      <div class="metas">
+        <label>Meta total do dia:</label>
+        <input type="number" id="metaTotal">
+
+        <label>Início do turno:</label>
+        <input type="time" id="horaInicio" value="07:00">
+
+        <label>Fim previsto do turno:</label>
+        <input type="time" id="horaFim" value="00:00">
+      </div>
+
+      <div>
+        <label>Registre as tarefas por hora:</label>
+        <div id="tarefasPorHora">
+
+        </div>
+        <div class="botao_atualizar">
+          <button onclick="atualizarGrafico()">Atualizar</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="previsaoSaida"></div>
+    <div id="produtividadeNecessaria"></div>
+    <div id="metaSeparacaoHora"></div>
+    <div id="alertaAtraso" class="alerta" style="display: none;">⚠️ A produção está atrasada! Previsão de saída
+      estendida.</div>
+
+    <div id="grafico-container">
+      <canvas id="graficoMeta"></canvas>
+      <canvas id="graficoBarras" style="display:none;"></canvas>
+    </div>
+  </div>
+
+  <button id="fullscreen-btn" onclick="toggleFullscreen()">Tela Cheia</button>
+
+  <footer class="bg-light text-center py-3 mt-5 border-top card-footer">
+    <small class="d-block">&copy; 2025 Centro de Distribuição Osmar Nicolini - Todos os direitos reservados.</small>
+    <small class="d-block mt-2">Implementado por Mickael Giordani</small>
+  </footer>
+
+  <script src="./js/scriptExpedition.js"></script>
+
+</body>
+
+</html>
