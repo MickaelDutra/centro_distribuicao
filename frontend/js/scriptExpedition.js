@@ -134,7 +134,7 @@ function hideLoading() {
 
 const pausas = [
     { inicio: "12:00", fim: "13:00" },
-    { inicio: "19:00", fim: "20:00" },
+    { inicio: "20:00", fim: "21:00" },
 ]
 
 // converte "HH:MM" para minutos
@@ -329,7 +329,7 @@ function atualizarGrafico() {
                 if (atrasoMinutos > 0) atrasoTexto += `${atrasoMinutos}min`
 
                 document.getElementById("alertaAtraso").style.display = "block"
-                document.getElementById("alertaAtraso").innerText = `⚠️ Atraso esperado: ${atrasoTexto}`
+               // document.getElementById("alertaAtraso").innerText = `⚠️ Atraso esperado: ${atrasoTexto}`
             } else {
                 document.getElementById("alertaAtraso").style.display = "none"
             }
