@@ -22,6 +22,9 @@ app.get("/ocorrencias", (req, res) => {
     res.sendFile(path.join(frontendPath, "occurrences.html"));
 });
 
+app.get("/embarques", async (req, res) => {
+    res.sendFile(path.join(frontendPath, "unitizadores.html"));
+});
 
 // Expediçao
 
@@ -151,6 +154,121 @@ app.get("/expedicao/dados", async (req, res) => {
     }
 });
 
+
+app.get("/expedicao/embarques", async (req, res) => {
+    const browser = await puppeteer.launch({
+        //headless: false,
+        //slowMo: 5,
+        //args: ["--start-maximized"],
+        //defaultViewport: null
+        headless: true,
+        args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+
+    try {
+        const page = await browser.newPage();
+
+        // Login
+        console.log("Acessando login...");
+        await page.goto(LOGIN_URL, { waitUntil: "networkidle2", timeout: 60000 });
+        await page.type('input[name="username"]', USER, { delay: 50 });
+        await page.type('input[name="password"]', PASS, { delay: 50 });
+        await page.click('button[type="submit"]');
+        await page.waitForNavigation({ waitUntil: "networkidle2", timeout: 60000 });
+
+        // Vai para acompanhamento de embarques
+        console.log("Abrindo acompanhamento de embarques...");
+        await page.goto("http://129.159.63.229:6042/expedicao/acompanhamento-de-embarques", {
+            waitUntil: "networkidle2",
+            timeout: 60000,
+        });
+
+        // Aguarda a tabela
+        await page.waitForSelector("table", { timeout: 15000 });
+
+        // 1. Abrir o popup de filtro (clicando no ícone)
+        console.log("Abrindo popup de filtro...");
+        await page.waitForSelector('span.MuiIconButton-label svg[title="Filtrar"]', { timeout: 15000 });
+        await page.click('span.MuiIconButton-label svg[title="Filtrar"]');
+
+        // 2. Preencher datas no filtro
+        console.log("Preenchendo datas do filtro...");
+        const hoje = new Date();;
+
+        const formatar = (d) => {
+            const dia = String(d.getDate()).padStart(2, '0');
+            const mes = String(d.getMonth() + 1).padStart(2, '0');
+            const ano = d.getFullYear();
+            const horas = String(d.getHours()).padStart(2, '0');
+            const minutos = String(d.getMinutes()).padStart(2, '0');
+
+            return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+        };
+
+        const dataFinal = new Date(hoje);
+        dataFinal.setDate(hoje.getDate() - 2);
+
+        const dataInicial = new Date(hoje);
+        dataInicial.setDate(hoje.getDate() - 92);
+
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        await page.waitForSelector('input[name="PERIODO_INICIAL"]', { timeout: 10000 });
+        await page.click('input[name="PERIODO_INICIAL"]', { clickCount: 3 });
+        await page.type('input[name="PERIODO_INICIAL"]', formatar(dataInicial), { delay: 100 });
+
+        await page.waitForSelector('input[name="PERIODO_FINAL"]', { delay: 50, timeout: 10000 });
+        await page.click('input[name="PERIODO_FINAL"]', { clickCount: 3 });
+        await page.type('input[name="PERIODO_FINAL"]', formatar(dataFinal),  { delay: 100 });
+
+        // 3. Clicar no botão submit do filtro
+        console.log("Aplicando filtro...");
+        // Espera o botão existir no DOM (não precisa estar visível)
+        await page.waitForSelector('button.MuiButton-root', { timeout: 10000 });
+
+        // Força o clique pelo DOM, ignorando visibilidade
+        await page.evaluate(() => {
+            const buttons = [...document.querySelectorAll('button.MuiButton-root')];
+            const filtrar = buttons.find(btn => btn.textContent.trim() === 'Filtrar');
+            if (filtrar) filtrar.click();
+        });
+
+        // 4. Esperar a tabela recarregar
+        console.log("Aguardando tabela recarregar...");
+        await page.waitForSelector("table", { timeout: 15000 });
+        await page.waitForSelector("table tbody tr", { timeout: 20000 });
+
+
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Extrai os dados
+        const embarques = await page.evaluate(() => {
+            const linhas = Array.from(document.querySelectorAll("table tbody tr"));
+            return linhas.map(linha => {
+                const colunas = linha.querySelectorAll("td");
+                return {
+                    embarque: colunas[1]?.innerText.trim() || "",
+                    placa: colunas[2]?.innerText.trim() || "",
+                    cliente: colunas[3]?.innerText.trim() || "",
+                    qtdUnit: colunas[4]?.innerText.trim() || "",
+                    qtdEmbs: colunas[5]?.innerText.trim() || "",
+                    peso: colunas[6]?.innerText.trim() || "",
+                    cubagem: colunas[7]?.innerText.trim() || "",
+                    dataEmbarque: colunas[8]?.innerText.trim() || "",
+                    sincronizacao: colunas[9]?.innerText.trim() || ""
+                };
+            });
+        });
+
+        await browser.close();
+        console.log("Dados coletados com sucesso!");
+        return res.json({ embarques });
+    } catch (e) {
+        console.error("Erro ao coletar embarques:", e.message);
+        await browser.close();
+        return res.status(500).json({ erro: "Falha ao coletar embarques", detalhe: e.message });
+    }
+});
 
 
 
