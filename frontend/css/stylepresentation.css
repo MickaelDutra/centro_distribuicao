@@ -46,8 +46,18 @@ iframe.ativo {
 .controle button {
     background: #007bff;
     color: white;
+    text-decoration: none;
 }
 
 .controle button.pausado {
     background: #dc3545;
+}
+
+.controle button a {
+    color: white;
+    text-decoration: none;
+}
+.controle select {
+    background: white;
+    color: black;
 }

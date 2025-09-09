@@ -3,11 +3,12 @@ const iframes = document.querySelectorAll("iframe");
 
 // 🔹 Nomes personalizados para cada iframe
 const nomes = [
+    "Avisos",
     "WMS - Gerencial",
     "WMS - Geral",
     "WMS - Gráficos",
     "Não embarcados",
-    "Separação"
+    "Separação",
 ];
 
 const seletor = document.getElementById("seletor");

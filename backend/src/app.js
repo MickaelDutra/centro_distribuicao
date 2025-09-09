@@ -34,6 +34,9 @@ app.get("/expedicao-painel", async (req, res) => {
     res.sendFile(path.join(frontendPath, "presentation.html"));
 });
 
+app.get("/avisos", async (req, res) => {
+    res.sendFile(path.join(frontendPath, "warnings.html"));
+});
 
 // Expediçao
 

@@ -37,4 +37,5 @@ function hideLoading() {
 
 window.onload = async () => {
     await carregarDados();   // preenche os inputs com os dados do JSON
+    setInterval(carregarDados, 3600000); // atualiza a cada 1 hora (3600000 ms)
 };

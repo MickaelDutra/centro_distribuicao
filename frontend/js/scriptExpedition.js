@@ -293,7 +293,7 @@ function atualizarGrafico() {
 
         if (Math.abs(mediaRecente - metaPorHora) < 0.1) {
             // Produtividade está na média necessária, deve terminar no fim do turno
-            document.getElementById("previsaoSaida").innerText = `⏰ Previsão de saída: ${horaFim}`
+            document.getElementById("previsaoSaida").innerText = `Previsão de saída: ${horaFim}`
             document.getElementById("alertaAtraso").style.display = "none"
         } else {
             // Produtividade diferente da média, calcular baseado no ritmo atual
@@ -316,7 +316,7 @@ function atualizarGrafico() {
             })
 
             const horaEstimativa = tempoComPausas.toTimeString().slice(0, 5)
-            document.getElementById("previsaoSaida").innerText = `⏰ Previsão de saída: ${horaEstimativa}`
+            document.getElementById("previsaoSaida").innerText = `Previsão de saída: ${horaEstimativa}`
 
             // se passar do fim do turno, calcula atraso
             if (tempoComPausas > fimTurno) {
@@ -342,10 +342,10 @@ function atualizarGrafico() {
 
     const metaSeparacaoHora = metaPorHora.toFixed(1)
     document.getElementById("metaSeparacaoHora").innerText =
-        `📊 Meta de separação/hora: ${metaSeparacaoHora} tarefas/hora`
+        `Meta de separação/hora: ${metaSeparacaoHora} tarefas/hora`
 
     const produtividadeNecessariaEl = document.getElementById("produtividadeNecessaria")
-    produtividadeNecessariaEl.innerText = `📈 Produtividade necessária: ${produtividadeNecessaria.toFixed(1)} tarefas/hora`
+    produtividadeNecessariaEl.innerText = `Produtividade necessária: ${produtividadeNecessaria.toFixed(1)} tarefas/hora`
     produtividadeNecessariaEl.style.color = acumulado < metaTotal ? "red" : "green"
 
     const corProducao = acumulado < metaTotal ? "red" : "green"
