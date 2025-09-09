@@ -26,6 +26,15 @@ app.get("/embarques", async (req, res) => {
     res.sendFile(path.join(frontendPath, "unitizadores.html"));
 });
 
+app.get("/embarquesdiv", async (req, res) => {
+    res.sendFile(path.join(frontendPath, "unitizadoresdiv.html"));
+});
+
+app.get("/expedicao-painel", async (req, res) => {
+    res.sendFile(path.join(frontendPath, "presentation.html"));
+});
+
+
 // Expediçao
 
 const LOGIN_URL = "http://129.159.63.229:6042/login";
@@ -44,6 +53,10 @@ app.get('/', (req, res) => {
 
 app.get('/expedicao', (req, res) => {
     res.sendFile(path.join(frontendPath, "expedition.html"));
+});
+
+app.get('/expedicaodiv', (req, res) => {
+    res.sendFile(path.join(frontendPath, "expeditiondiv.html"));
 });
 
 

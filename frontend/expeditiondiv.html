@@ -10,17 +10,18 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body>
 
+<body>
+<!-- 
   <nav id="nav-bar" class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
       <a class="navbar-brand" href="/">
         Centro de Distribuição
-        <img src="./assets/img/frangoForm.png" alt="Logo" height="40" class="d-inline-block align-text-top">
+      <img src="./assets/img/frangoForm.png" alt="Logo" height="40" class="d-inline-block align-text-top">
       </a>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="/expedicao-painel">Painel Expedição</a></li>
+          <li class="nav-item"><a class="nav-link" href="/expedicao">Expedição</a></li>
           <li class="nav-item"><a class="nav-link" href="/ocorrencias">Ocorrências</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Relatórios</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Configurações</a></li>
@@ -28,7 +29,7 @@
       </div>
     </div>
   </nav>
-
+ -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
     <p>Carregando...</p>
@@ -37,7 +38,7 @@
   <div class="container">
     <h2>Painel de Separação - Centro de Distribuição</h2>
 
-    <div id="form-container">
+    <div style="display: none;" id="form-container">
       <div class="metas">
         <label>Meta total do dia:</label>
         <input type="number" id="metaTotal">
@@ -49,7 +50,7 @@
         <input type="time" id="horaFim" value="00:00">
       </div>
 
-      <div>
+      <div style="display: none;">
         <label>Registre as tarefas por hora:</label>
         <div id="tarefasPorHora">
 
@@ -74,7 +75,7 @@
 
   <button id="fullscreen-btn" onclick="toggleFullscreen()">Tela Cheia</button>
 
-  <footer class="bg-light text-center py-3 mt-5 border-top card-footer">
+  <footer id="card-footer" class="bg-light text-center py-3 mt-5 border-top card-footer">
     <small class="d-block">&copy; 2025 Centro de Distribuição Osmar Nicolini - Todos os direitos reservados.</small>
     <small class="d-block mt-2">Implementado por Mickael Giordani</small>
   </footer>
